@@ -27,7 +27,59 @@ pub struct Initialize<'info> {
     )]
     pub config : Account<'info, Config>,
 
-    
+    #[account(
+        init,
+        payer = admin,
+        mint::decimals = 6,
+        mint::authority = config.key(),
+        seeds = [b"lp", config.key().as_ref()],
+        bump,
+    )]
+    pub mint_lp : Account<'info, Mint>,
 
+    #[account(
+        init,
+        payer = admin,
+        associated_token::mint = mint_x,
+        associated_token::authority = config,
+        associated_token::token_program = token_program
+    )]
+    pub vault_x : Account<'info, TokenAccount>,
 
+    #[account(
+        init,
+        payer = admin,
+        associated_token::mint = mint_y,
+        associated_token::authority = config,
+        associated_token::token_program = token_program
+    )]
+    pub vault_y : Account<'info, TokenAccount>,
+
+    pub token_program : Program<'info, Token>,
+
+    pub system_program : Program<'info, System>,
+
+    pub associated_token_program : Program<'info, AssociatedToken>
+
+}
+
+pub fn Initialize(
+    &mut self,
+    seed: u64,
+    fee: u16,
+    authority: Option<Pubkey>,
+    bumps: &InitializeBumps,
+) -> Result<()> {
+    self.config.set_inner(Config{
+        seed,
+        authority,
+        mint_x: self.mint_x.key(),
+        mint_y: self.mint_y.key(),
+        fee,
+        locked: false,
+        config_bump: bumps.config,
+        lp_bump: bumps.mint_lp
+    });
+
+    Ok(())
 }
