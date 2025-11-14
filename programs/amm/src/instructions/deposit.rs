@@ -82,3 +82,12 @@ pub struct Deposit<'info>{
 
     pub system_program: Program<'info, System>,
 }
+
+pub fn deposit(
+    &mut self,
+    amount: u64,
+    max_x: u64,
+    max_y: u64
+) -> Result<()>{
+    
+}
