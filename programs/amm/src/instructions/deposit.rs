@@ -108,4 +108,7 @@ pub fn deposit(
             (amount.x, amount.y)
         }
     };
+
+    require!(x<=max_x && y<=max_y, AmmError::SlipageExceeded);
+
 }
