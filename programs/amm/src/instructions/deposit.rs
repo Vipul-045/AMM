@@ -89,5 +89,23 @@ pub fn deposit(
     max_x: u64,
     max_y: u64
 ) -> Result<()>{
-    
+
+    require!(self.config.locked == false, AmmError::PoolLocked);
+
+    require!(amount ! = 0, AmmError::InvalidAmount);
+
+    let (x,y) = match self.mint_lp.supply == 0 && self.vault_x.amount == 0 && self.vault_y.amount == 0 {
+        true => (max_x, max_y),
+
+        false => {
+            let amounts = ConstantProduct::xy_deposit_amount_from_lp(
+                self.vault_x.amount,
+                self.vault_y.amount,
+                self.mint_lp.amount,
+                amount,
+                6
+            ).unwrap();
+            (amount.x, amount.y)
+        }
+    };
 }
