@@ -111,4 +111,10 @@ pub fn deposit(
 
     require!(x<=max_x && y<=max_y, AmmError::SlipageExceeded);
 
+    self.deposit_tokens(true, x)?;
+
+    self.deposit_tokens(false, y)?;
+
+    
+
 }
