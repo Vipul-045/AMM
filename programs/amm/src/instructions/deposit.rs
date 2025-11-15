@@ -115,6 +115,6 @@ pub fn deposit(
 
     self.deposit_tokens(false, y)?;
 
-    
+    self.mint_lp_tokens(amount);
 
 }
