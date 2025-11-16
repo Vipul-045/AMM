@@ -116,5 +116,39 @@ pub fn deposit(
     self.deposit_tokens(false, y)?;
 
     self.mint_lp_tokens(amount);
+}
 
+pub fn deposit_tokens(&mut self, is_x: bool, amount: u64) -> Result<()> { 
+    let (
+        from, 
+        to,
+        mint,
+        decimals
+    ) = match is_x{
+        true => (
+            self.user_ata_x.to_account_info(),
+            self.vault_x.to_account_info(),
+            self.mint_x.to_account_info(),
+            self.mint_x.decimals
+        ),
+        false => (
+            self.user_ata_y.to_account_info(),
+            self.vault_y.to_account_info(),
+            self.mint_y.to_account_info(),
+            self.mint_y.decimals
+        ),
+    };
+
+    let cpi_program = self.token_program.to_account_info();
+
+    let cpi_accounts = TransferChecked {
+        from,
+        to,
+        authority: self.user.to_account_info(),
+        mint,
+    };
+
+    let cpi_context = CpiContext::new(cpi_program, cpi_accounts);
+
+    transfer_checked(cpi_context, amount, decimals)
 }
