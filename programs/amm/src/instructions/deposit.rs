@@ -152,3 +152,25 @@ pub fn deposit_tokens(&mut self, is_x: bool, amount: u64) -> Result<()> {
 
     transfer_checked(cpi_context, amount, decimals)
 }
+
+pub fn mint_lp_tokens(&mut self, amount: u64) -> Result <()>{
+    let cpi_program = self.token_program.to_account_info();
+
+    let cpi_accounts = MintTo {
+        mint: self.mint_lp.to_account_info(),
+        to: self.user_ata_lp.to_account_info(),
+        authority: self.config.to_account_info(),
+    };
+
+    let seeds: &[&[u8]; 3] = &[
+        &b"config"[..],
+        &self.config.seed.to_le_bytes(),
+        &[self.config.config_bump],
+    ];
+
+    let signer_seeds: &[&[&[u8]]] = &[&seeds[..]];
+
+    let cpi_context = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer_seeds);
+
+    mint_to(cpi_context, amount);
+}
