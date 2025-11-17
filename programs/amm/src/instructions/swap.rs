@@ -68,3 +68,31 @@ pub struct Swap<'info>{
 
     pub system_program: Program<'info, System>, 
 }
+
+pub fn Swap(&mut self, is_x: bool, amount_in:u64, min_amount_out: u64) -> Result <()> {
+    require!(!self.config.locked , AmmError::PoolLoacked);
+    require!(amount_in > 0, AmmError::InvalidAmount);
+
+    let mut curve = ConstantProduct::init(
+        self.vault_x.amount,
+        self.vault_y.amount,
+        self.mint_lp.supply,
+        self.config.fee,
+        None,
+    ).map_err(AmmError::from)?;
+
+    let p = match is_x{
+        true => LiquidityPair::X,
+        false => LiquidityPair::Y
+    };
+
+    let swap_result = curve.swap(p, amount_in, min_amount_out).map_err(AmmError::from)?;
+
+    require!(swap_result.deposit != 0, AmmError::InvalidAmount);
+    require!(swap_result.withdrawn != 0, AmmError::InvalidAmount);
+
+    self.deposit_tokens(is_x, swap_result.deposit)?;
+    self.withdraw_tokens(is_x, swap_result.withdraw)?;
+
+    Ok(())
+}
