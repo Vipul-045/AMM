@@ -40,3 +40,15 @@ pub enum AmmError{
     #[msg("Zero Balance.")]
     ZeroBalance,
 }
+
+fn from(error: CurveError) -> AmmError {
+    match error {
+        CurveError::InvalidPrecision => AmmError::InvalidPrecision,
+        CurveError::Overflow => AmmError::Overflow,
+        CurveError::Underflow => AmmError::Underflow,
+        CurveError::InvalidFeeAmount => AmmError::InvalidFeeAmount,
+        CurveError::InsufficientBalance => AmmError::InsufficientBalance,
+        CurveError::ZeroBalance => AmmError::ZeroBalance,
+        CurveError::SlippageLimitExceeded => AmmError::SlipageExceeded,
+    }
+}
