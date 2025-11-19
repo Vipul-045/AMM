@@ -98,7 +98,7 @@ impl<'info> Deposit<'info> {
                 let amounts = ConstantProduct::xy_deposit_amounts_from_l(
                     self.vault_x.amount,
                     self.vault_y.amount,
-                    self.mint_lp.amount,
+                    self.mint_lp.supply,
                     amount,
                     6,
                 )
