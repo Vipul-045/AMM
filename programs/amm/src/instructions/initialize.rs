@@ -11,8 +11,8 @@ use crate::states::Config;
 #[instruction(seed: u64)]
 pub struct Initialize<'info> {
 
-    #[acoount(mut)]
-    pub admin: signer<'info>,
+    #[account(mut)]
+    pub admin: Signer<'info>,
 
     pub mint_x : Account<'info, Mint>,
 

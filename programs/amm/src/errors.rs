@@ -46,7 +46,7 @@ fn from(error: CurveError) -> AmmError {
         CurveError::InvalidPrecision => AmmError::InvalidPrecision,
         CurveError::Overflow => AmmError::Overflow,
         CurveError::Underflow => AmmError::Underflow,
-        CurveError::InvalidFeeAmount => AmmError::InvalidFeeAmount,
+        CurveError::InvalidFeeAmount => AmmError::InvalidFee,
         CurveError::InsufficientBalance => AmmError::InsufficientBalance,
         CurveError::ZeroBalance => AmmError::ZeroBalance,
         CurveError::SlippageLimitExceeded => AmmError::SlipageExceeded,
