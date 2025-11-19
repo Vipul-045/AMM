@@ -81,7 +81,7 @@ impl<'info> Swap<'info> {
             self.config.fee,
             None,
         )
-        .map_err(|e| AmmError::from(e))?;
+        .map_err(AmmError::from)?;
 
         let p = match is_x {
             true => LiquidityPair::X,
@@ -90,7 +90,7 @@ impl<'info> Swap<'info> {
 
         let swap_result = curve
             .swap(p, amount_in, min_amount_out)
-            .map_err(|e| AmmError::from(e))?;
+            .map_err(AmmError::from)?;
 
         require!(swap_result.deposit != 0, AmmError::InvalidAmount);
         require!(swap_result.withdraw != 0, AmmError::InvalidAmount);
