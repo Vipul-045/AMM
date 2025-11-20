@@ -41,6 +41,7 @@ pub enum AmmError{
     ZeroBalance,
 }
 
+impl From<CurveError> for AmmError {
 fn from(error: CurveError) -> AmmError {
     match error {
         CurveError::InvalidPrecision => AmmError::InvalidPrecision,
@@ -51,4 +52,5 @@ fn from(error: CurveError) -> AmmError {
         CurveError::ZeroBalance => AmmError::ZeroBalance,
         CurveError::SlippageLimitExceeded => AmmError::SlipageExceeded,
     }
+}
 }

@@ -22,7 +22,7 @@ pub mod amms {
     fee: u16,
     authority: Option<Pubkey>
     ) -> Result<()> {
-       ctx.accounts.Initialize(seed, fee, authority, &ctx.bumps)?;
+       ctx.accounts.initialize(seed, fee, authority, &ctx.bumps)?;
         Ok(())
     }
 
