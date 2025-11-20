@@ -13,8 +13,10 @@ pub struct Initialize<'info> {
     #[account(mut)]
     pub admin: Signer<'info>,
 
+    #[account(mut)]
     pub mint_x: Account<'info, Mint>,
 
+    #[account(mut)]
     pub mint_y: Account<'info, Mint>,
 
     #[account(
