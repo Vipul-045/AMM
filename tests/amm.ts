@@ -29,8 +29,8 @@ describe("amm creation", () =>{
   const fee = 30;
 
   it("Initializing the AMM pool", async () => {
-    mintX = await createMint(connection, admin.payer, admin.publicKey, null, 6)
-    mintY = await createMint(connection, admin.payer, admin.publicKey, null, 6)
+    mintX = await createMint(connection, admin.payer, admin.publicKey, null, 6);
+    mintY = await createMint(connection, admin.payer, admin.publicKey, null, 6);
 
     [configPda] = anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from('config'), seed.toArrayLike(Buffer, "le" , 8)],
@@ -50,8 +50,8 @@ describe("amm creation", () =>{
       admin: admin.publicKey,
       mintX, 
       mintY,
-      config: configPda,
-      mintLp: lpMint,
+      config : configPda,
+      mintLp : lpMint,
       vaultX,
       vaultY,
       tokenProgram: anchor.utils.token.TOKEN_PROGRAM_ID,
@@ -62,9 +62,49 @@ describe("amm creation", () =>{
 
     console.log('https://explorer.solana.com/tx/${tx}?cluster=devnet');
     console.log("AMM initialized successfully");
-    
 
+    const ataX = await getOrCreateAssociatedTokenAccount (
+      connection,
+      admin.payer,
+      mintX,
+      admin.publicKey
+    );
 
+    const ataY = await getOrCreateAssociatedTokenAccount(
+      connection,
+      admin.payer,
+      mintY,
+      admin.publicKey
+    );
+
+    const ataLp = await getOrCreateAssociatedTokenAccount(
+      connection,
+      admin.payer,
+      lpMint,
+      admin.publicKey
+    );
+
+    await mintTo(
+      connection,
+      admin.payer,
+      mintX,
+      ataX.address,
+      admin.payer,
+      1_000_000,
+    );
+
+    await mintTo(
+      connection,
+      admin.payer,
+      mintY,
+      ataY.address,
+      admin.payer,
+      1_000_000
+    );
+
+    userAtaX = ataX.address;
+    userAtaY = ataY.address;
+    userAtaLp = ataLp.address;
   })
 }
 
