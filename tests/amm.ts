@@ -30,8 +30,42 @@ describe("amm creation", () =>{
 
   it("Initializing the AMM pool", async () => {
     mintX = await createMint(connection, admin.payer, admin.publicKey, null, 6)
+    mintY = await createMint(connection, admin.payer, admin.publicKey, null, 6)
+
+    [configPda] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from('config'), seed.toArrayLike(Buffer, "le" , 8)],
+      program.programId
+    );
+
+    [lpMint] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("lp"), configPda.toBuffer()],
+      program.programId
+    );
+    
+    vaultX = await getAssociatedTokenAddress(mintX, configPda, true);
+    vaultY = await getAssociatedTokenAddress(mintY, configPda, true);
+
+    const tx = await program.methods.initialize(seed, fee, null)
+    .accounts({
+      admin: admin.publicKey,
+      mintX, 
+      mintY,
+      config: configPda,
+      mintLp: lpMint,
+      vaultX,
+      vaultY,
+      tokenProgram: anchor.utils.token.TOKEN_PROGRAM_ID,
+      associatedTokenProgram: anchor.utils.token.ASSOCIATED_PROGRAM_ID,
+      systemProgram: anchor.web3.SystemProgram.programId,
+    })
+    .rpc();
+
+    console.log('https://explorer.solana.com/tx/${tx}?cluster=devnet');
+    console.log("AMM initialized successfully");
+    
+
+
   })
-  
 }
 
 )
