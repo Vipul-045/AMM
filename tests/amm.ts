@@ -131,6 +131,25 @@ describe("amm creation", () =>{
     console.log("Liquidity Deposited")
   });
 
+  it("Swaps token X for token Y", async() => {
+    const amountIn = new anchor.BN(100_000);
+    const minOut = new anchor.BN(50_000);
+
+    const tx = await program.methods
+    .swap(true, amountIn, minOut)
+    .accounts({
+      user: admin.publicKey,
+      userTokenIn: userAtaX,
+      userTokenOut: userAtaY,
+      confid:configPda,
+      vaultIn: vaultX,
+      vaultOut: vaultY,
+      tokenProgram: anchor.utils.token.TOKEN_PROGRAM_ID,
+    }).rpc();
+
+    console.log(`https://explorer.solana.com/tx/${tx}?cluster=devnet`)
+    console.log("Swapped X for Y")
+  })
 
 }
 
