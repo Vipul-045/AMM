@@ -3,6 +3,7 @@ import { Program } from "@coral-xyz/anchor";
 import { Amms } from "../target/types/amms";
 
 import {createMint, getOrCreateAssociatedTokenAccount, mintTo, getAssociatedTokenAddress} from "@solana/spl-token";
+import { token } from "@coral-xyz/anchor/dist/cjs/utils";
 
 describe("amm creation", () =>{
 
@@ -105,7 +106,32 @@ describe("amm creation", () =>{
     userAtaX = ataX.address;
     userAtaY = ataY.address;
     userAtaLp = ataLp.address;
-  })
+  });
+
+  it("Deposits liquidity into the pool", async() => {
+    const depositAmount = new anchor.BN(1_000_000);
+    const maxX = new anchor.BN(500_000);
+    const maxY = new anchor.BN(500_000);
+
+    const tx = await program.methods
+    .deposit(depositAmount, maxX, maxY)
+    .accounts({
+      user: admin.publicKey,
+      userTokenX: userAtaX,
+      userTokenY: userAtaY,
+      userLp: userAtaLp,
+      config: configPda,
+      vaultX,
+      vaultY,
+      lpMint,
+      tokenProgram: anchor.utils.token.TOKEN_PROGRAM_ID,
+    }).rpc();
+
+    console.log(`https://explorer.solana.com/tx/${tx}?cluster=devnet`);
+    console.log("Liquidity Deposited")
+  });
+
+
 }
 
 )
