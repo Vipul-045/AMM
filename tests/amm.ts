@@ -139,18 +139,18 @@ describe("amm creation", () =>{
     .swap(true, amountIn, minOut)
     .accounts({
       user: admin.publicKey,
-      userTokenIn: userAtaX,
-      userTokenOut: userAtaY,
-      confid:configPda,
-      vaultIn: vaultX,
-      vaultOut: vaultY,
+      mintX,
+      mintY,
+      userAtaX,
+      userAtaY,
+      config: configPda,
+      vaultX,
+      vaultY,
       tokenProgram: anchor.utils.token.TOKEN_PROGRAM_ID,
     }).rpc();
 
     console.log(`https://explorer.solana.com/tx/${tx}?cluster=devnet`)
     console.log("Swapped X for Y")
-  })
+  });
 
-}
-
-)
+});
